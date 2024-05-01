@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Luck of the Syndicate</title>
+  <style>
+    /* Load Cascadia Code font */
+    @import url('https://fonts.googleapis.com/css2?family=Cascadia+Code&display=swap');
+
+    /* Style for the title */
+    h1 {
+      font-family: 'Cascadia Code', monospace;
+      text-align: center;
+      margin-top: 50px;
+    }
+    /* Style for canvas */
+    canvas {
+      max-width: 100%; /* Ensure canvas does not exceed screen width */
+      margin: auto; /* Center the canvas */
+      display: block; /* Ensure canvas behaves like a block-level element */
+      width: 80%; /* Match the width of the header */
+    }
+    /* Add margin between the bar chart and the pie chart */
+    #pieChartCanvas {
+      margin-top: 20px;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <h1>Luck of the Syndicate</h1>
+  <canvas id="barChartCanvas" height="400"></canvas>
+  <canvas id="pieChartCanvas" height="200"></canvas>
+
+  <script>
+    // Provided lottery numbers
+    const lotteryNumbers = [2, 15, 18, 25, 57, 58, 53, 2, 20, 39, 40, 47, 4, 8, 13, 22, 24, 33, 47, 1, 5, 6, 18, 22, 29, 40, 9];
+
+    // Define chosen numbers for each person
+    const people = {
+      'Harry': [32, 49],
+      'Paul': [21, 49, 1],
+      'Ben': [43, 4, 7],
+      'Charlie': [6, 22, 16],
+      'Joe': [18, 32],
+      'Olly': [13, 29],
+      'Dan': [5, 27],
+      'Ashley': [25, 17]
+    };
+
+    // Count matched numbers per person
+    const matchedCounts = {};
+    for (const name in people) {
+      matchedCounts[name] = people[name].filter(num => lotteryNumbers.includes(num)).length;
+    }
+
+    // Calculate percentage of correct matched numbers per person
+    const totalMatched = Object.values(matchedCounts).reduce((acc, val) => acc + val, 0);
+    const percentageMatched = {};
+    for (const name in people) {
+      percentageMatched[name] = ((matchedCounts[name] / totalMatched) * 100).toFixed(2);
+    }
+
+    // Randomize colors for the charts
+    const colors = ['#FF5733', '#00FFFF', '#800080', '#008000', '#FFFF00', '#800000', '#000080', '#000000'];
+    const randomColors = colors.sort(() => Math.random() - 0.5);
+
+    // Display bar chart
+    const barChartCanvas = document.getElementById('barChartCanvas').getContext('2d');
+    new Chart(barChartCanvas, {
+      type: 'bar',
+      data: {
+        labels: Object.keys(people),
+        datasets: [{
+          label: 'Matched Numbers Count',
+          data: Object.values(matchedCounts),
+          backgroundColor: randomColors,
+          borderColor: randomColors,
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true,
+            precision: 0, // Display y-axis labels as integers
+            ticks: {
+              stepSize: 1 // Ensure ticks are integers
+            }
+          }
+        }
+      }
+    });
+
+    // Display pie chart
+    const pieChartCanvas = document.getElementById('pieChartCanvas').getContext('2d');
+    new Chart(pieChartCanvas, {
+      type: 'pie',
+      data: {
+        labels: Object.keys(people),
+        datasets: [{
+          label: 'Percentage of Correct Matched Numbers',
+          data: Object.values(percentageMatched),
+          backgroundColor: randomColors,
+          borderColor: randomColors,
+          borderWidth: 1
+        }]
+      }
+    });
+  </script>
+</body>
+</html>
