@@ -35,7 +35,7 @@
 
   <script>
     // Provided lottery numbers
-    const lotteryNumbers = [2, 15, 18, 25, 57, 58, 53, 2, 20, 39, 40, 47, 4, 8, 13, 22, 24, 33, 47, 1, 5, 6, 18, 22, 29, 40, 9];
+    const lotteryNumbers = [2, 15, 18, 25, 57, 58, 53, 2, 20, 39, 40, 47, 4, 8, 13, 22, 24, 33, 47, 1, 5, 6, 18, 22, 29, 40, 9, 13, 16, 21, 22, 44, 53 36];
 
     // Define chosen numbers for each person
     const people = {
@@ -62,9 +62,18 @@
       percentageMatched[name] = ((matchedCounts[name] / totalMatched) * 100).toFixed(2);
     }
 
-    // Randomize colors for the charts
-    const colors = ['#FF5733', '#00FFFF', '#800080', '#008000', '#FFFF00', '#800000', '#000080', '#000000'];
+    // Predefined colors of the rainbow and brown
+    const colors = ['#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '#0000FF', '#4B0082', '#8B4513', '#8B0000']; // Red, Orange, Yellow, Green, Blue, Indigo, Violet, Brown
+
+    // Randomize the order of colors
     const randomColors = colors.sort(() => Math.random() - 0.5);
+
+    // Assign colors to each person consistently
+    const personColors = {};
+    const peopleNames = Object.keys(people);
+    for (let i = 0; i < peopleNames.length; i++) {
+      personColors[peopleNames[i]] = randomColors[i % randomColors.length];
+    }
 
     // Display bar chart
     const barChartCanvas = document.getElementById('barChartCanvas').getContext('2d');
@@ -75,8 +84,8 @@
         datasets: [{
           label: 'Matched Numbers Count',
           data: Object.values(matchedCounts),
-          backgroundColor: randomColors,
-          borderColor: randomColors,
+          backgroundColor: Object.values(personColors),
+          borderColor: Object.values(personColors),
           borderWidth: 1
         }]
       },
@@ -102,8 +111,8 @@
         datasets: [{
           label: 'Percentage of Correct Matched Numbers',
           data: Object.values(percentageMatched),
-          backgroundColor: randomColors,
-          borderColor: randomColors,
+          backgroundColor: Object.values(personColors),
+          borderColor: Object.values(personColors),
           borderWidth: 1
         }]
       }
