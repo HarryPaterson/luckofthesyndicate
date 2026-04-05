@@ -32,7 +32,6 @@
   <canvas id="pieChartCanvas" height="200"></canvas>
 
   <script>
-    // Load lottery numbers from your GitHub CSV
     async function loadLotteryNumbers() {
       const response = await fetch("https://raw.githubusercontent.com/HarryPaterson/luckofthesyndicate/main/merged_lottery_numbers.csv");
       const text = await response.text();
@@ -46,7 +45,6 @@
         );
     }
 
-    // Define chosen numbers each person
     const people = {
       'Harry': [32, 49],
       'Paul': [21, 49, 1],
@@ -61,26 +59,23 @@
     async function init() {
       const lotteryNumbers = await loadLotteryNumbers();
 
-      // Count matched numbers per person
       const matchedCounts = {};
       for (const name in people) {
         matchedCounts[name] = people[name].filter(num => lotteryNumbers.includes(num)).length;
       }
 
-      // Calculate percentage of correct matched numbers per person
       const totalMatched = Object.values(matchedCounts).reduce((acc, val) => acc + val, 0);
       const percentageMatched = {};
+
       for (const name in people) {
         percentageMatched[name] = totalMatched > 0
           ? ((matchedCounts[name] / totalMatched) * 100).toFixed(2)
           : 0;
       }
 
-      // Randomize colors for the charts
       const colors = ['#FF5733', '#00FFFF', '#800080', '#008000', '#FFFF00', '#800000', '#000080', '#000000'];
       const randomColors = colors.sort(() => Math.random() - 0.5);
 
-      // Display bar chart
       const barChartCanvas = document.getElementById('barChartCanvas').getContext('2d');
       new Chart(barChartCanvas, {
         type: 'bar',
@@ -98,7 +93,6 @@
           scales: {
             y: {
               beginAtZero: true,
-              precision: 0,
               ticks: {
                 stepSize: 1
               }
@@ -107,7 +101,6 @@
         }
       });
 
-      // Display pie chart
       const pieChartCanvas = document.getElementById('pieChartCanvas').getContext('2d');
       new Chart(pieChartCanvas, {
         type: 'pie',
